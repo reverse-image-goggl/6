@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="en-us">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="./style.css">
 
-    <!-- Yandex Games SDK -->
-    <script src="https://yandex.ru/games/sdk/v2"></script>
-<script src="https://cdn.jsdelivr.net/gh/classroom-new-studens/b@main/TemplateData/gamepush-unity.js"></script>
-    <style>
+<html lang="en-us">
+<head><meta http-equiv="Content-Security-Policy" content="child-src 'self' *.allwebgames.com *.gametok.com *.juegocasa.com *.playhop.com *.wowspiele.de *.yandex.az *.yandex.by *.yandex.co.il *.yandex.com *.yandex.com.am *.yandex.com.ge *.yandex.com.tr *.yandex.ee *.yandex.fr *.yandex.kg *.yandex.kz *.yandex.lt *.yandex.lv *.yandex.md *.yandex.ru *.yandex.tj *.yandex.tm *.yandex.ua *.yandex.uz allwebgames.com blob: gametok.com juegocasa.com playhop.com wowspiele.de yandex.az yandex.by yandex.co.il yandex.com yandex.com.am yandex.com.ge yandex.com.tr yandex.ee yandex.fr yandex.kg yandex.kz yandex.lt yandex.lv yandex.md yandex.ru yandex.tj yandex.tm yandex.ua yandex.uz; connect-src 'self' *.allwebgames.com *.eponesh.com *.gameanalytics.com *.gametok.com *.juegocasa.com *.playhop.com *.unity3d.com *.website.yandexcloud.net *.wowspiele.de *.yandex.az *.yandex.by *.yandex.co.il *.yandex.com *.yandex.com.am *.yandex.com.ge *.yandex.com.tr *.yandex.ee *.yandex.fr *.yandex.kg *.yandex.kz *.yandex.lt *.yandex.lv *.yandex.md *.yandex.net *.yandex.ru *.yandex.tj *.yandex.tm *.yandex.ua *.yandex.uz allwebgames.com blob: data: gametok.com juegocasa.com playhop.com storage.yandexcloud.net wowspiele.de wss://*.eponesh.com:* www.google-analytics.com www.googletagmanager.com yandex.az yandex.by yandex.co.il yandex.com yandex.com.am yandex.com.ge yandex.com.tr yandex.ee yandex.fr yandex.kg yandex.kz yandex.lt yandex.lv yandex.md yandex.ru yandex.tj yandex.tm yandex.ua yandex.uz yandexmetrica.com yastatic.net; default-src 'self'; font-src 'self' *.allwebgames.com *.gametok.com *.juegocasa.com *.playhop.com *.website.yandexcloud.net *.wowspiele.de *.yandex.az *.yandex.by *.yandex.co.il *.yandex.com *.yandex.com.am *.yandex.com.ge *.yandex.com.tr *.yandex.ee *.yandex.fr *.yandex.kg *.yandex.kz *.yandex.lt *.yandex.lv *.yandex.md *.yandex.ru *.yandex.tj *.yandex.tm *.yandex.ua *.yandex.uz allwebgames.com data: fonts.gstatic.com gametok.com juegocasa.com playhop.com storage.yandexcloud.net wowspiele.de yandex.az yandex.by yandex.co.il yandex.com yandex.com.am yandex.com.ge yandex.com.tr yandex.ee yandex.fr yandex.kg yandex.kz yandex.lt yandex.lv yandex.md yandex.ru yandex.tj yandex.tm yandex.ua yandex.uz yastat.net yastatic.net; frame-src 'self' *.allwebgames.com *.gametok.com *.juegocasa.com *.playhop.com *.website.yandexcloud.net *.wowspiele.de *.yandex.az *.yandex.by *.yandex.co.il *.yandex.com *.yandex.com.am *.yandex.com.ge *.yandex.com.tr *.yandex.ee *.yandex.fr *.yandex.kg *.yandex.kz *.yandex.lt *.yandex.lv *.yandex.md *.yandex.ru *.yandex.tj *.yandex.tm *.yandex.ua *.yandex.uz allwebgames.com gametok.com juegocasa.com localhost playhop.com wowspiele.de yandex.az yandex.by yandex.co.il yandex.com yandex.com.am yandex.com.ge yandex.com.tr yandex.ee yandex.fr yandex.kg yandex.kz yandex.lt yandex.lv yandex.md yandex.ru yandex.tj yandex.tm yandex.ua yandex.uz yastatic.net; img-src 'self' *.allwebgames.com *.eponesh.com *.gametok.com *.juegocasa.com *.playhop.com *.website.yandexcloud.net *.wowspiele.de *.yandex.az *.yandex.by *.yandex.co.il *.yandex.com *.yandex.com.am *.yandex.com.ge *.yandex.com.tr *.yandex.ee *.yandex.fr *.yandex.kg *.yandex.kz *.yandex.lt *.yandex.lv *.yandex.md *.yandex.net *.yandex.ru *.yandex.tj *.yandex.tm *.yandex.ua *.yandex.uz allwebgames.com blob: data: gametok.com juegocasa.com playhop.com storage.yandexcloud.net wowspiele.de yandex.az yandex.by yandex.co.il yandex.com yandex.com.am yandex.com.ge yandex.com.tr yandex.ee yandex.fr yandex.kg yandex.kz yandex.lt yandex.lv yandex.md yandex.ru yandex.tj yandex.tm yandex.ua yandex.uz yastatic.net; media-src 'self' *.allwebgames.com *.gametok.com *.juegocasa.com *.playhop.com *.website.yandexcloud.net *.wowspiele.de *.yandex.az *.yandex.by *.yandex.co.il *.yandex.com *.yandex.com.am *.yandex.com.ge *.yandex.com.tr *.yandex.ee *.yandex.fr *.yandex.kg *.yandex.kz *.yandex.lt *.yandex.lv *.yandex.md *.yandex.net *.yandex.ru *.yandex.tj *.yandex.tm *.yandex.ua *.yandex.uz allwebgames.com blob: data: gametok.com juegocasa.com playhop.com storage.yandexcloud.net wowspiele.de yandex.az yandex.by yandex.co.il yandex.com yandex.com.am yandex.com.ge yandex.com.tr yandex.ee yandex.fr yandex.kg yandex.kz yandex.lt yandex.lv yandex.md yandex.ru yandex.tj yandex.tm yandex.ua yandex.uz; object-src 'self' *.allwebgames.com *.gametok.com *.juegocasa.com *.playhop.com *.wowspiele.de *.yandex.az *.yandex.by *.yandex.co.il *.yandex.com *.yandex.com.am *.yandex.com.ge *.yandex.com.tr *.yandex.ee *.yandex.fr *.yandex.kg *.yandex.kz *.yandex.lt *.yandex.lv *.yandex.md *.yandex.ru *.yandex.tj *.yandex.tm *.yandex.ua *.yandex.uz allwebgames.com blob: gametok.com juegocasa.com playhop.com wowspiele.de yandex.az yandex.by yandex.co.il yandex.com yandex.com.am yandex.com.ge yandex.com.tr yandex.ee yandex.fr yandex.kg yandex.kz yandex.lt yandex.lv yandex.md yandex.ru yandex.tj yandex.tm yandex.ua yandex.uz; script-src 'self' 'unsafe-eval' 'unsafe-inline' *.allwebgames.com *.eponesh.com *.gameanalytics.com *.gametok.com *.juegocasa.com *.playhop.com *.website.yandexcloud.net *.wowspiele.de *.ya.ru *.yandex.az *.yandex.by *.yandex.co.il *.yandex.com *.yandex.com.am *.yandex.com.ge *.yandex.com.tr *.yandex.ee *.yandex.fr *.yandex.kg *.yandex.kz *.yandex.lt *.yandex.lv *.yandex.md *.yandex.ru *.yandex.tj *.yandex.tm *.yandex.ua *.yandex.uz abt.s3.yandex.net allwebgames.com blob: data: gametok.com juegocasa.com playhop.com storage.yandexcloud.net wowspiele.de www.google-analytics.com www.googletagmanager.com ya.ru yandex.az yandex.by yandex.co.il yandex.com yandex.com.am yandex.com.ge yandex.com.tr yandex.ee yandex.fr yandex.kg yandex.kz yandex.lt yandex.lv yandex.md yandex.ru yandex.tj yandex.tm yandex.ua yandex.uz yastatic.net; style-src 'self' 'unsafe-eval' 'unsafe-inline' *.allwebgames.com *.gametok.com *.juegocasa.com *.playhop.com *.website.yandexcloud.net *.wowspiele.de *.yandex.az *.yandex.by *.yandex.co.il *.yandex.com *.yandex.com.am *.yandex.com.ge *.yandex.com.tr *.yandex.ee *.yandex.fr *.yandex.kg *.yandex.kz *.yandex.lt *.yandex.lv *.yandex.md *.yandex.ru *.yandex.tj *.yandex.tm *.yandex.ua *.yandex.uz allwebgames.com blob: data: fonts.googleapis.com gametok.com juegocasa.com playhop.com storage.yandexcloud.net wowspiele.de yandex.az yandex.by yandex.co.il yandex.com yandex.com.am yandex.com.ge yandex.com.tr yandex.ee yandex.fr yandex.kg yandex.kz yandex.lt yandex.lv yandex.md yandex.ru yandex.tj yandex.tm yandex.ua yandex.uz; worker-src 'self' *.allwebgames.com *.gametok.com *.juegocasa.com *.playhop.com *.website.yandexcloud.net *.wowspiele.de *.yandex.az *.yandex.by *.yandex.co.il *.yandex.com *.yandex.com.am *.yandex.com.ge *.yandex.com.tr *.yandex.ee *.yandex.fr *.yandex.kg *.yandex.kz *.yandex.lt *.yandex.lv *.yandex.md *.yandex.ru *.yandex.tj *.yandex.tm *.yandex.ua *.yandex.uz allwebgames.com blob: gametok.com juegocasa.com playhop.com storage.yandexcloud.net wowspiele.de yandex.az yandex.by yandex.co.il yandex.com yandex.com.am yandex.com.ge yandex.com.tr yandex.ee yandex.fr yandex.kg yandex.kz yandex.lt yandex.lv yandex.md yandex.ru yandex.tj yandex.tm yandex.ua yandex.uz"/>
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<link rel="stylesheet" href="./style.css"/>
+<!-- Yandex Games SDK -->
+<script src="https://app-328096.games.s3.yandex.net/sdk/_/v2.cae1bc7ae5f093826d38.js"></script>
+<style>
         /* Убираем выделение по нажатию клавиш */
         canvas:focus {
             outline: none;
@@ -32,39 +31,53 @@
             height: 100%;
         }
     </style>
+<!-- Additional head modules -->
+<script type="text/javascript">
+        window.yandexMetricaCounterId = parseInt(97049881);
+</script>
+<script type="text/javascript">
+    (function (m, e, t, r, i, k, a) {
+        m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+        m[i].l = 1 * new Date();
+        for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+        k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+    })
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-    <!-- Additional head modules -->
-
+    ym(window.yandexMetricaCounterId, "init", {
+        clickmap: false,
+        trackLinks: true,
+        accurateTrackBounce: true
+    });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/97049881" style="position:absolute; left:-9999px;" alt=""/></div></noscript>
 </head>
 <body class="dark">
-
-    <div id="unity-container" class="unity-desktop">
-        <canvas id="unity-canvas" tabindex="-1"></canvas>
-    </div>
-    <div id="loading-cover" style="display:none;">
-        <div id="unity-loading-bar">
-            <div id="unity-logo"><img src="logo.png"></div>
-            <div id="unity-progress-bar-empty" style="display: none;">
-                <div id="unity-progress-bar-full"></div>
-            </div>
-            <div class="spinner"></div>
-        </div>
-    </div>
-
-    <!-- Additional body modules -->
-
-    <script>
+<div id="unity-container" class="unity-desktop">
+<canvas id="unity-canvas" tabindex="-1"></canvas>
+</div>
+<div id="loading-cover" style="display:none;">
+<div id="unity-loading-bar">
+<div id="unity-logo"><img src="logo.png"/></div>
+<div id="unity-progress-bar-empty" style="display: none;">
+<div id="unity-progress-bar-full"></div>
+</div>
+<div class="spinner"></div>
+</div>
+</div>
+<!-- Additional body modules -->
+<script>
         const hideFullScreenButton = "";
         const buildUrl = "Build";
-        const loaderUrl = buildUrl + "/BuildWebGL.loader.js";
+        const loaderUrl = buildUrl + "/BlueVSRed1.loader.js";
         const config = {
-            dataUrl: buildUrl + "/BuildWebGL.data.unityweb",
-            frameworkUrl: buildUrl + "/BuildWebGL.framework.js.unityweb",
-            codeUrl: buildUrl + "/BuildWebGL.wasm.unityweb",
+            dataUrl: buildUrl + "/a36b9f5940448d36a8d5682bc38478ea.data.unityweb",
+            frameworkUrl: buildUrl + "/bc3e88a086fb03a73daece7610914c2f.js.unityweb",
+            codeUrl: buildUrl + "/b8e5b3dfc39c219988e9b794d0e2b865.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
-            companyName: "DefaultCompany",
-            productName: "Multiplayer 1 (Course)",
-            productVersion: "0.1.0"
+            companyName: "AhioGame",
+            productName: "BlueVSRed",
+            productVersion: "1.0"
         };
 
         const container = document.querySelector("#unity-container");
@@ -116,11 +129,38 @@
             FocusGame();
         });
 
+        document.addEventListener('visibilitychange', function () {
+            if (ysdk !== null && initGame == true) {
+                if (document.hidden) {
+                    myGameInstance.SendMessage('YandexGame', 'OnVisibilityGameWindow', 'false');
+                }
+                else {
+                    myGameInstance.SendMessage('YandexGame', 'OnVisibilityGameWindow', 'true');
+
+                    if ((ysdk.deviceInfo.isMobile() || ysdk.deviceInfo.isTablet()) && ysdk.screen.fullscreen.status == 'off')
+                        ysdk.screen.fullscreen.request();
+                }
+            }
+        });
+
+        function ResumeGame() {
+            if (myGameInstance && myGameInstance.Module) {
+                // Возобновление главного цикла Unity
+                myGameInstance.Module.resumeMainLoop();
+
+                // (Курсор снова может быть спрятан, если это требуется игрой)
+            }
+
+            let audioElements = document.querySelectorAll('audio, video');
+            audioElements.forEach(element => {
+                element.muted = false;
+            });
+        }
+
         let StartUnityInstance;
         let myGameInstance = null;
         let ysdk = null;
         let player = null;
-        let leaderboard;
         let payments = null;
         let initGame = false;
         let nowFullAdOpen = false;
@@ -151,7 +191,7 @@
 
         function LocalHost() {
             var host = window.location.hostname;
-            if (host == "localhost" || host == "127.0.0.1" || window.parent === window && host == "infinitygs.ru")
+            if (host == "localhost" || host == "127.0.0.1")
                 return true;
             else return false;
         }
@@ -164,7 +204,7 @@
                 console.log('Init Yandex SDK');
                 ysdk = await YaGames.init();
 
-                FullAdShow(); // First ad true
+                // First ad false
 
                 // Additional init modules
 cloudSaves = await LoadCloud();
@@ -173,11 +213,17 @@ console.log('Init Storage ysdk');
 paymentsData = await GetPayments();
 console.log('Init Payments ysdk');
 
+InitLeaderboards();
+console.log('Init Leaderboards');
+
 environmentData = await RequestingEnvironmentData();
 console.log('Init Envir ysdk');
 
 playerData = await InitPlayer();
 console.log('Init Player ysdk');
+
+flasgsData = await GetFlags();
+console.log('Init Flags ysdk');
 
 
             } catch (e) {
@@ -244,20 +290,20 @@ console.log('Init Player ysdk');
                         callbacks:
                         {
                             onOpen: () => {
-                                console.log('Opened Video Ad. Id: ' + id);
+                                console.log('Opened Video Ad');
                                 myGameInstance.SendMessage('YandexGame', 'OpenVideo');
                             },
                             onClose: () => {
-                                console.log('Closed Video Ad. Id: ' + id);
+                                console.log('Closed Video Ad');
                                 myGameInstance.SendMessage('YandexGame', 'CloseVideo');
                                 FocusGame();
                             },
                             onRewarded: () => {
-                                console.log('Reward Video Ad. Id: ' + id);
+                                console.log('Reward Video Ad');
                                 myGameInstance.SendMessage('YandexGame', 'RewardVideo', id);
                             },
                             onError: (e) => {
-                                console.error('Error Video Ad. Id: ' + id, e);
+                                console.error('Error Video Ad', e);
                                 myGameInstance.SendMessage('YandexGame', 'ErrorVideo');
                             }
                         }
@@ -285,121 +331,6 @@ console.log('Init Player ysdk');
             } catch (e) {
                 console.error('CRASH Sticky Activity: ', e.message);
             }
-        }
-
-        function InitLeaderboard() {
-            try {
-                ysdk.getLeaderboards().then(_lb => {
-                    leaderboard = _lb
-                    myGameInstance.SendMessage('YandexGame', 'InitializedLB');
-                });
-            } catch (e) {
-                console.error('CRASH Init Leaderboard: ', e.message);
-            }
-        }
-
-        function SetLeaderboardScores(_name, score) {
-            try {
-                ysdk.getLeaderboards()
-                    .then(leaderboard => {
-                        leaderboard.setLeaderboardScore(_name, score);
-                    });
-            } catch (e) {
-                console.error('CRASH Set Leader board Scores: ', e.message);
-            }
-        }
-
-        function GetLeaderboardScores(nameLB, maxPlayers, quantityTop, quantityAround, photoSize, auth) {
-            try {
-                var jsonEntries = {
-                    technoName: '',
-                    isDefault: false,
-                    isInvertSortOrder: false,
-                    decimalOffset: 0,
-                    type: '' // , title: ''
-                };
-
-                ysdk.getLeaderboards()
-                    .then(leaderboard => leaderboard.getLeaderboardDescription(nameLB))
-                    .then(res => {
-                        jsonEntries.technoName = nameLB;
-                        jsonEntries.isDefault = res.default;
-                        jsonEntries.isInvertSortOrder = res.description.invert_sort_order;
-                        jsonEntries.decimalOffset = res.description.score_format.options.decimal_offset;
-                        jsonEntries.type = res.description.type; // Не определяется на момент 18.07.23
-                        //jsonEntries.title = res.title; // Реализуйте по предпочтениям
-
-                        return leaderboard.getLeaderboardEntries(nameLB, {
-                            quantityTop: quantityTop,
-                            includeUser: auth,
-                            quantityAround: quantityAround
-                        });
-                    })
-                    .then(res => {
-                        let jsonPlayers = EntriesLB(res, maxPlayers, photoSize);
-                        let combinedJson = { ...jsonEntries, ...jsonPlayers };
-
-                        myGameInstance.SendMessage('YandexGame', 'LeaderboardEntries', JSON.stringify(combinedJson));
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            }
-            catch (e) {
-                console.error('CRASH Get Leaderboard: ', e.message);
-            }
-        }
-
-        function EntriesLB(res, maxPlayers, photoSize) {
-            let LeaderboardEntriesText = '';
-            let playersCount;
-
-            if (res.entries.length < maxPlayers) {
-                playersCount = res.entries.length;
-            } else {
-                playersCount = maxPlayers;
-            }
-
-            let ranks = new Array(playersCount);
-            let photos = new Array(playersCount);
-            let mames = new Array(playersCount);
-            let scores = new Array(playersCount);
-            let uniqueIDs = new Array(playersCount);
-
-            for (i = 0; i < playersCount; i++) {
-                ranks[i] = res.entries[i].rank;
-                scores[i] = res.entries[i].score;
-                uniqueIDs[i] = res.entries[i].player.uniqueID;
-
-                if (photoSize === 'nonePhoto' || res.entries[i].player.scopePermissions.avatar !== "allow") {
-                    photos[i] = 'nonePhoto';
-                } else {
-                    photos[i] = res.entries[i].player.getAvatarSrc(photoSize);
-                }
-
-                if (res.entries[i].player.scopePermissions.public_name !== "allow") {
-                    mames[i] = "anonymous";
-                } else {
-                    mames[i] = res.entries[i].player.publicName;
-                }
-
-                LeaderboardEntriesText += ranks[i] + '. ' + mames[i] + ": " + scores[i] + '\n';
-            }
-
-            if (playersCount === 0) {
-                LeaderboardEntriesText = 'no data';
-            }
-
-            let jsonPlayers = {
-                "entries": LeaderboardEntriesText,
-                "ranks": ranks,
-                "photos": photos,
-                "names": mames,
-                "scores": scores,
-                "uniqueIDs": uniqueIDs
-            };
-
-            return jsonPlayers;
         }
 
         function Review() {
@@ -532,7 +463,10 @@ function GetPayments(sendback) {
                         let title = [];
                         let description = [];
                         let imageURI = [];
+                        let price = [];
                         let priceValue = [];
+                        let priceCurrencyCode = [];
+                        let currencyImageURL = [];
                         let consumed = [];
 
                         payments.getPurchases().then(purchases => {
@@ -541,7 +475,10 @@ function GetPayments(sendback) {
                                 title[i] = products[i].title;
                                 description[i] = products[i].description;
                                 imageURI[i] = products[i].imageURI;
+                                price[i] = products[i].price;
                                 priceValue[i] = products[i].priceValue;
+                                priceCurrencyCode[i] = products[i].priceCurrencyCode;
+                                currencyImageURL[i] = products[i].getPriceCurrencyImage("medium");
 
                                 consumed[i] = true;
                                 for (i2 = 0; i2 < purchases.length; i2++) {
@@ -557,7 +494,10 @@ function GetPayments(sendback) {
                                 "title": title,
                                 "description": description,
                                 "imageURI": imageURI,
+                                "price": price,
                                 "priceValue": priceValue,
+                                "priceCurrencyCode": priceCurrencyCode,
+                                "currencyImageURL": currencyImageURL,
                                 "consumed": consumed,
                                 "language": ysdk.environment.i18n.lang
                             };
@@ -633,6 +573,137 @@ function ConsumePurchases() {
     } catch (e) {
         console.error('CRASH Consume purchases: ', e.message);
     }
+}
+
+
+let leaderboard = null;
+
+function InitLeaderboards() {
+    ysdk.getLeaderboards()
+        .then(_lb => leaderboard = _lb);
+}
+
+function WaitForLeaderboard() {
+    return new Promise((resolve, reject) => {
+        const interval = setInterval(() => {
+            if (leaderboard !== null) {
+                clearInterval(interval);
+                clearTimeout(timeout);
+                resolve();
+            }
+        }, 100);
+
+        const timeout = setTimeout(() => {
+            clearInterval(interval);
+            reject(new Error("Leaderboard initialization timeout"));
+        }, 5000);
+    });
+}
+
+async function GetLeaderboardScores(nameLB, maxPlayers, quantityTop, quantityAround, photoSize, auth) {
+    try {
+        if (leaderboard === null) {
+            await WaitForLeaderboard();
+        }
+
+        var jsonEntries = {
+            technoName: '',
+            isDefault: false,
+            isInvertSortOrder: false,
+            decimalOffset: 0,
+            type: '' // , title: ''
+        };
+
+        ysdk.getLeaderboards()
+            .then(leaderboard => leaderboard.getLeaderboardDescription(nameLB))
+            .then(res => {
+                jsonEntries.technoName = nameLB;
+                jsonEntries.isDefault = res.default;
+                jsonEntries.isInvertSortOrder = res.description.invert_sort_order;
+                jsonEntries.decimalOffset = res.description.score_format.options.decimal_offset;
+                jsonEntries.type = res.description.type; // Не определяется на момент 18.07.23
+                //jsonEntries.title = res.title; // Реализуйте по предпочтениям
+
+                return leaderboard.getLeaderboardEntries(nameLB, {
+                    quantityTop: quantityTop,
+                    includeUser: auth,
+                    quantityAround: quantityAround
+                });
+            })
+            .then(res => {
+                let jsonPlayers = EntriesLB(res, maxPlayers, photoSize);
+                let combinedJson = { ...jsonEntries, ...jsonPlayers };
+
+                myGameInstance.SendMessage('YandexGame', 'LeaderboardEntries', JSON.stringify(combinedJson));
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+    catch (e) {
+        console.error('CRASH Get Leaderboard: ', e.message);
+    }
+}
+
+async function SetLeaderboardScores(_name, score) {
+    try {
+        if (leaderboard === null) {
+            await WaitForLeaderboard();
+        }
+
+        ysdk.getLeaderboards()
+            .then(leaderboard => {
+                leaderboard.setLeaderboardScore(_name, score);
+            });
+    } catch (e) {
+        console.error('CRASH Set Leader board Scores: ', e.message);
+    }
+}
+
+function EntriesLB(res, maxPlayers, photoSize) {
+    let LeaderboardEntriesText = '';
+    let playersCount;
+
+    if (res.entries.length < maxPlayers) {
+        playersCount = res.entries.length;
+    } else {
+        playersCount = maxPlayers;
+    }
+
+    let ranks = new Array(playersCount);
+    let photos = new Array(playersCount);
+    let mames = new Array(playersCount);
+    let scores = new Array(playersCount);
+    let uniqueIDs = new Array(playersCount);
+
+    for (i = 0; i < playersCount; i++) {
+        ranks[i] = res.entries[i].rank;
+        scores[i] = res.entries[i].score;
+        uniqueIDs[i] = res.entries[i].player.uniqueID;
+        photos[i] = res.entries[i].player.getAvatarSrc(photoSize);
+
+        if (res.entries[i].player.scopePermissions.public_name !== "allow")
+            mames[i] = "anonymous";
+        else
+            mames[i] = res.entries[i].player.publicName;
+
+        LeaderboardEntriesText += ranks[i] + '. ' + mames[i] + ": " + scores[i] + '\n';
+    }
+
+    if (playersCount === 0) {
+        LeaderboardEntriesText = 'no data';
+    }
+
+    let jsonPlayers = {
+        "entries": LeaderboardEntriesText,
+        "ranks": ranks,
+        "photos": photos,
+        "names": mames,
+        "scores": scores,
+        "uniqueIDs": uniqueIDs
+    };
+
+    return jsonPlayers;
 }
 
 
@@ -741,7 +812,8 @@ function InitPlayer(sendback) {
                                 "playerAuth": "resolved",
                                 "playerName": playerName,
                                 "playerId": player.getUniqueID(),
-                                "playerPhoto": playerPhoto
+                                "playerPhoto": playerPhoto,
+                                "payingStatus": player.getPayingStatus()
                             };
                             if (sendback)
                                 myGameInstance.SendMessage('YandexGame', 'SetInitializationSDK', JSON.stringify(authJson));
@@ -768,7 +840,8 @@ function NotAuthorized() {
         "playerAuth": "rejected",
         "playerName": "unauthorized",
         "playerId": "unauthorized",
-        "playerPhoto": "null"
+        "playerPhoto": "unknown",
+        "payingStatus": player.getPayingStatus()
     };
     return JSON.stringify(authJson);
 }
@@ -786,6 +859,41 @@ function OpenAuthDialog() {
             console.log('CRASH Open Auth Dialog: ', e.message);
         }
     }
+}
+
+
+let flasgsData = "null";
+
+function GetFlags() {
+    return new Promise((resolve) => {
+        if (ysdk == null) {
+            resolve('null');
+            return;
+        }
+        try {
+            ysdk.getFlags().then(flags => {
+                let names = [];
+                let values = [];
+
+                for (let key in flags) {
+                    if (flags.hasOwnProperty(key)) {
+                        names.push(key);
+                        values.push(flags[key]);
+                    }
+                }
+
+                let jsonFlags = {
+                    "names": names,
+                    "values": values
+                };
+
+                resolve(JSON.stringify(jsonFlags));
+            });
+        } catch (e) {
+            console.error('CRASH Get Flags: ', e.message);
+            resolve('null');
+        }
+    });
 }
 
 
