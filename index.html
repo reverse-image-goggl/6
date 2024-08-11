@@ -125,52 +125,51 @@
         let initGame = false;
         let nowFullAdOpen = false;
 
-        const script = document.createElement("script");
-        script.src = loaderUrl;
-        script.onload = () => {
-            StartUnityInstance = function () {
-                createUnityInstance(canvas, config, (progress) => {
-                    spinner.style.display = "none";
-                    progressBarEmpty.style.display = "";
-                    progressBarFull.style.width = `${100 * progress}%`;
-                }).then((unityInstance) => {
-                    myGameInstance = unityInstance;
-                    loadingCover.style.display = "none";
-                }).catch((message) => {
-                    console.error(message);
-                });
-            };
-            if (LocalHost())
-                StartUnityInstance_IfUnloaded();
-        };
+const script = document.createElement("script");
+script.src = loaderUrl;
+script.onload = () => {
+    StartUnityInstance = function () {
+        createUnityInstance(canvas, config, (progress) => {
+            spinner.style.display = "none";
+            progressBarEmpty.style.display = "";
+            progressBarFull.style.width = `${100 * progress}%`;
+        }).then((unityInstance) => {
+            myGameInstance = unityInstance;
+            loadingCover.style.display = "none";
+        }).catch((message) => {
+            console.error(message);
+        });
+    };
+    StartUnityInstance_IfUnloaded();
+};
 
-        function StartUnityInstance_IfUnloaded() {
-            if (spinner.style.display !== "none")
-                StartUnityInstance();
-        }
+function StartUnityInstance_IfUnloaded() {
+    if (spinner.style.display !== "none")
+        StartUnityInstance();
+}
 
-        InitYSDK();
-        async function InitYSDK() {
-            try {
-                if (LocalHost()) return;
+InitYSDK();
+async function InitYSDK() {
+    try {
+        console.log('Init Yandex SDK');
+        ysdk = await YaGames.init();
 
-                console.log('Init Yandex SDK');
-                ysdk = await YaGames.init();
+        FullAdShow(); // First ad true
 
-                FullAdShow(); // First ad true
+        // Additional init modules
+        cloudSaves = await LoadCloud();
+        console.log('Init Storage ysdk');
 
-                // Additional init modules
-cloudSaves = await LoadCloud();
-console.log('Init Storage ysdk');
+        paymentsData = await GetPayments();
+        console.log('Init Payments ysdk');
 
-paymentsData = await GetPayments();
-console.log('Init Payments ysdk');
+        environmentData = await RequestingEnvironmentData();
+        console.log('Init Envir ysdk');
 
-environmentData = await RequestingEnvironmentData();
-console.log('Init Envir ysdk');
-
-playerData = await InitPlayer();
-console.log('Init Player ysdk');
+        playerData = await InitPlayer();
+        console.log('Init Player ysdk');
+    } catch (error) {
+        console.error('Error initializing Yandex SDK:', error);
 
 
             } catch (e) {
