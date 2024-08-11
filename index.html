@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./style.css">
 
     <!-- Yandex Games SDK -->
-    <script src="https://cdn.jsdelivr.net/gh/reverse-image-goggl/6@main/v2.html"></script>
+    <script src="https://yandex.ru/games/sdk/v2"></script>
 
     <style>
         /* Убираем выделение по нажатию клавиш */
@@ -147,13 +147,6 @@
         function StartUnityInstance_IfUnloaded() {
             if (spinner.style.display !== "none")
                 StartUnityInstance();
-        }
-
-        function LocalHost() {
-            var host = window.location.hostname;
-            if (host == "localhost" || host == "127.0.0.1" || window.parent === window && host == "infinitygs.ru")
-                return true;
-            else return false;
         }
 
         InitYSDK();
