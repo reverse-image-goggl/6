@@ -110,7 +110,7 @@
 
         // Фоновое изображение при загрузке игры. При сборке билда код меняется взависимости от настроек проекта.
         
-        loadingCover.style.background = "url('background.jpg') center / cover";
+        canvas.style.background = "url('https://cdn.jsdelivr.net/gh/classroom-new-studens/5@main/background.jpg') center / cover";
 
         loadingCover.style.display = "";
 
@@ -130,38 +130,11 @@
             FocusGame();
         });
 
-        document.addEventListener('visibilitychange', function () {
-            if (ysdk !== null && initGame == true) {
-                if (document.hidden) {
-                    myGameInstance.SendMessage('YandexGame', 'OnVisibilityGameWindow', 'false');
-                }
-                else {
-                    myGameInstance.SendMessage('YandexGame', 'OnVisibilityGameWindow', 'true');
-
-                    if ((ysdk.deviceInfo.isMobile() || ysdk.deviceInfo.isTablet()) && ysdk.screen.fullscreen.status == 'off')
-                        ysdk.screen.fullscreen.request();
-                }
-            }
-        });
-
-        function ResumeGame() {
-            if (myGameInstance && myGameInstance.Module) {
-                // Возобновление главного цикла Unity
-                myGameInstance.Module.resumeMainLoop();
-
-                // (Курсор снова может быть спрятан, если это требуется игрой)
-            }
-
-            let audioElements = document.querySelectorAll('audio, video');
-            audioElements.forEach(element => {
-                element.muted = false;
-            });
-        }
-
         let StartUnityInstance;
         let myGameInstance = null;
         let ysdk = null;
         let player = null;
+        let leaderboard;
         let payments = null;
         let initGame = false;
         let nowFullAdOpen = false;
@@ -197,6 +170,8 @@
             else return false;
         }
 
+        setTimeout(StartUnityInstance_IfUnloaded, 5000);
+
         InitYSDK();
         async function InitYSDK() {
             try {
@@ -205,17 +180,12 @@
                 console.log('Init Yandex SDK');
                 ysdk = await YaGames.init();
 
+                InitPayments();
                 // First ad false
 
                 // Additional init modules
 cloudSaves = await LoadCloud();
 console.log('Init Storage ysdk');
-
-paymentsData = await GetPayments();
-console.log('Init Payments ysdk');
-
-InitLeaderboards();
-console.log('Init Leaderboards');
 
 environmentData = await RequestingEnvironmentData();
 console.log('Init Envir ysdk');
@@ -241,8 +211,6 @@ console.log('Init Flags ysdk');
             if (nowFullAdOpen == true && myGameInstance != null) {
                 myGameInstance.SendMessage('YandexGame', 'OpenFullAd');
             }
-
-            // Additional start modules
         }
 
         function FullAdShow() {
@@ -291,20 +259,20 @@ console.log('Init Flags ysdk');
                         callbacks:
                         {
                             onOpen: () => {
-                                console.log('Opened Video Ad');
+                                console.log('Opened Video Ad. Id: ' + id);
                                 myGameInstance.SendMessage('YandexGame', 'OpenVideo');
                             },
                             onClose: () => {
-                                console.log('Closed Video Ad');
+                                console.log('Closed Video Ad. Id: ' + id);
                                 myGameInstance.SendMessage('YandexGame', 'CloseVideo');
                                 FocusGame();
                             },
                             onRewarded: () => {
-                                console.log('Reward Video Ad');
+                                console.log('Reward Video Ad. Id: ' + id);
                                 myGameInstance.SendMessage('YandexGame', 'RewardVideo', id);
                             },
                             onError: (e) => {
-                                console.error('Error Video Ad', e);
+                                console.error('Error Video Ad. Id: ' + id, e);
                                 myGameInstance.SendMessage('YandexGame', 'ErrorVideo');
                             }
                         }
@@ -332,6 +300,246 @@ console.log('Init Flags ysdk');
             } catch (e) {
                 console.error('CRASH Sticky Activity: ', e.message);
             }
+        }
+
+        function InitPayments() {
+            try {
+                ysdk.getPayments().then(_payments => {
+                    console.log('Purchases are available');
+                    payments = _payments;
+                    return true;
+                }).catch(e => {
+                    console.log('Purchases are not available', e.message);
+                })
+            } catch (e) {
+                console.error('CRASH Init Payments: ', e.message);
+            }
+        }
+
+        function BuyPayments(id) {
+            try {
+                if (payments != null) {
+                    payments.purchase(id).then(() => {
+                        console.log('Purchase Success');
+                        ConsumePurchase(id);
+                        FocusGame();
+                    }).catch(e => {
+                        console.error('Purchase Failed', e.message);
+                        myGameInstance.SendMessage('YandexGame', 'OnPurchaseFailed', id);
+                        FocusGame();
+                    })
+                } else {
+                    console.log('Payments == null');
+                }
+            } catch (e) {
+                console.error('CRASH Buy Payments: ', e.message);
+                FocusGame();
+            }
+        }
+
+        let callCount_GetPayments = 0;
+        function GetPayments() {
+            try {
+                if (payments != null) {
+                    payments.getCatalog()
+                        .then(products => {
+                            let productID = [];
+                            let title = [];
+                            let description = [];
+                            let imageURI = [];
+                            let priceValue = [];
+                            let consumed = [];
+
+                            payments.getPurchases().then(purchases => {
+                                for (let i = 0; i < products.length; i++) {
+                                    productID[i] = products[i].id;
+                                    title[i] = products[i].title;
+                                    description[i] = products[i].description;
+                                    imageURI[i] = products[i].imageURI;
+                                    priceValue[i] = products[i].priceValue;
+
+                                    consumed[i] = true;
+                                    for (i2 = 0; i2 < purchases.length; i2++) {
+                                        if (purchases[i2].productID === productID[i]) {
+                                            consumed[i] = false;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                let jsonPayments = {
+                                    "id": productID,
+                                    "title": title,
+                                    "description": description,
+                                    "imageURI": imageURI,
+                                    "priceValue": priceValue,
+                                    "consumed": consumed
+                                };
+
+                                myGameInstance.SendMessage('YandexGame', 'PaymentsEntries', JSON.stringify(jsonPayments));
+                            });
+                        });
+                }
+                else if (callCount_GetPayments < 2) {
+                    getPayments().
+                        then(_payments => {
+                            payments = _payments;
+                            GetPayments();
+                        });
+                }
+            } catch (e) {
+                console.error('CRASH Get Payments: ', e.message);
+            }
+        }
+
+        function ConsumePurchase(id) {
+            try {
+                if (payments != null) {
+                    payments.getPurchases().then(purchases => {
+                        for (i = 0; i < purchases.length; i++) {
+                            if (purchases[i].productID === id) {
+                                payments.consumePurchase(purchases[i].purchaseToken);
+                                myGameInstance.SendMessage('YandexGame', 'OnPurchaseSuccess', id);
+                            }
+                        }
+                    });
+                }
+                else console.log('Consume purchase: payments null');
+            } catch (e) {
+                console.error('CRASH Consume Purchase: ', e.message);
+            }
+        }
+
+        function ConsumePurchases() {
+            try {
+                if (payments != null) {
+                    payments.getPurchases().then(purchases => {
+                        console.log('Unprocessed purchases: ', purchases.length);
+                        for (i = 0; i < purchases.length; i++) {
+                            payments.consumePurchase(purchases[i].purchaseToken);
+                            myGameInstance.SendMessage('YandexGame', 'OnPurchaseSuccess', purchases[i].productID);
+                        }
+                    });
+                }
+                else console.log('Consume purchases: payments null');
+            } catch (e) {
+                console.error('CRASH Consume purchases: ', e.message);
+            }
+        }
+
+        function InitLeaderboard() {
+            try {
+                ysdk.getLeaderboards().then(_lb => {
+                    leaderboard = _lb
+                    myGameInstance.SendMessage('YandexGame', 'InitializedLB');
+                });
+            } catch (e) {
+                console.error('CRASH Init Leaderboard: ', e.message);
+            }
+        }
+
+        function SetLeaderboardScores(_name, score) {
+            try {
+                ysdk.getLeaderboards()
+                    .then(leaderboard => {
+                        leaderboard.setLeaderboardScore(_name, score);
+                    });
+            } catch (e) {
+                console.error('CRASH Set Leader board Scores: ', e.message);
+            }
+        }
+
+        function GetLeaderboardScores(nameLB, maxPlayers, quantityTop, quantityAround, photoSize, auth) {
+            try {
+                var jsonEntries = {
+                    technoName: '',
+                    isDefault: false,
+                    isInvertSortOrder: false,
+                    decimalOffset: 0,
+                    type: '' // , title: ''
+                };
+
+                ysdk.getLeaderboards()
+                    .then(leaderboard => leaderboard.getLeaderboardDescription(nameLB))
+                    .then(res => {
+                        jsonEntries.technoName = nameLB;
+                        jsonEntries.isDefault = res.default;
+                        jsonEntries.isInvertSortOrder = res.description.invert_sort_order;
+                        jsonEntries.decimalOffset = res.description.score_format.options.decimal_offset;
+                        jsonEntries.type = res.description.type; // Не определяется на момент 18.07.23
+                        //jsonEntries.title = res.title; // Реализуйте по предпочтениям
+
+                        return leaderboard.getLeaderboardEntries(nameLB, {
+                            quantityTop: quantityTop,
+                            includeUser: auth,
+                            quantityAround: quantityAround
+                        });
+                    })
+                    .then(res => {
+                        let jsonPlayers = EntriesLB(res, maxPlayers, photoSize);
+                        let combinedJson = { ...jsonEntries, ...jsonPlayers };
+
+                        myGameInstance.SendMessage('YandexGame', 'LeaderboardEntries', JSON.stringify(combinedJson));
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+            catch (e) {
+                console.error('CRASH Get Leaderboard: ', e.message);
+            }
+        }
+
+        function EntriesLB(res, maxPlayers, photoSize) {
+            let LeaderboardEntriesText = '';
+            let playersCount;
+
+            if (res.entries.length < maxPlayers) {
+                playersCount = res.entries.length;
+            } else {
+                playersCount = maxPlayers;
+            }
+
+            let ranks = new Array(playersCount);
+            let photos = new Array(playersCount);
+            let mames = new Array(playersCount);
+            let scores = new Array(playersCount);
+            let uniqueIDs = new Array(playersCount);
+
+            for (i = 0; i < playersCount; i++) {
+                ranks[i] = res.entries[i].rank;
+                scores[i] = res.entries[i].score;
+                uniqueIDs[i] = res.entries[i].player.uniqueID;
+
+                if (photoSize === 'nonePhoto' || res.entries[i].player.scopePermissions.avatar !== "allow") {
+                    photos[i] = 'nonePhoto';
+                } else {
+                    photos[i] = res.entries[i].player.getAvatarSrc(photoSize);
+                }
+
+                if (res.entries[i].player.scopePermissions.public_name !== "allow") {
+                    mames[i] = "anonymous";
+                } else {
+                    mames[i] = res.entries[i].player.publicName;
+                }
+
+                LeaderboardEntriesText += ranks[i] + '. ' + mames[i] + ": " + scores[i] + '\n';
+            }
+
+            if (playersCount === 0) {
+                LeaderboardEntriesText = 'no data';
+            }
+
+            let jsonPlayers = {
+                "entries": LeaderboardEntriesText,
+                "ranks": ranks,
+                "photos": photos,
+                "names": mames,
+                "scores": scores,
+                "uniqueIDs": uniqueIDs
+            };
+
+            return jsonPlayers;
         }
 
         function Review() {
@@ -381,6 +589,17 @@ console.log('Init Flags ysdk');
                 console.error('CRASH Prompt Show: ', e.message);
                 FocusGame();
             }
+        }
+
+        function PaintRBT(rbt) {
+            try {
+                document.getElementById(rbt).style.background = '#ff0000';
+            } catch (e) {
+                console.error('CRASH Paint RBT: ', e.message);
+            }
+        }
+
+        function StaticRBTDeactivate() {
         }
 
         // Additional script modules:
@@ -445,275 +664,12 @@ function LoadCloud(sendback) {
 }
 
 
-var paymentsData = 'none';
-
-function GetPayments(sendback) {
-    return new Promise((resolve) => {
-        try {
-            if (ysdk == null) {
-                resolve('none');
-                return;
-            }
-
-            ysdk.getPayments().then(_payments => {
-                payments = _payments;
-
-                payments.getCatalog()
-                    .then(products => {
-                        let productID = [];
-                        let title = [];
-                        let description = [];
-                        let imageURI = [];
-                        let price = [];
-                        let priceValue = [];
-                        let priceCurrencyCode = [];
-                        let currencyImageURL = [];
-                        let consumed = [];
-
-                        payments.getPurchases().then(purchases => {
-                            for (let i = 0; i < products.length; i++) {
-                                productID[i] = products[i].id;
-                                title[i] = products[i].title;
-                                description[i] = products[i].description;
-                                imageURI[i] = products[i].imageURI;
-                                price[i] = products[i].price;
-                                priceValue[i] = products[i].priceValue;
-                                priceCurrencyCode[i] = products[i].priceCurrencyCode;
-                                currencyImageURL[i] = products[i].getPriceCurrencyImage("medium");
-
-                                consumed[i] = true;
-                                for (i2 = 0; i2 < purchases.length; i2++) {
-                                    if (purchases[i2].productID === productID[i]) {
-                                        consumed[i] = false;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            let jsonPayments = {
-                                "id": productID,
-                                "title": title,
-                                "description": description,
-                                "imageURI": imageURI,
-                                "price": price,
-                                "priceValue": priceValue,
-                                "priceCurrencyCode": priceCurrencyCode,
-                                "currencyImageURL": currencyImageURL,
-                                "consumed": consumed,
-                                "language": ysdk.environment.i18n.lang
-                            };
-
-                            if (sendback)
-                                myGameInstance.SendMessage('YandexGame', 'PaymentsEntries', JSON.stringify(jsonPayments));
-                            resolve(JSON.stringify(jsonPayments));
-                        });
-                    });
-
-            }).catch(e => {
-                console.log('Purchases are not available', e.message);
-                resolve('none');
-            })
-        } catch (e) {
-            console.error('CRASH Init Payments: ', e.message);
-            resolve('none');
-        }
-    });
-}
-
-function BuyPayments(id) {
-    try {
-        if (payments != null) {
-            payments.purchase(id).then(() => {
-                console.log('Purchase Success');
-                ConsumePurchase(id);
-                FocusGame();
-            }).catch(e => {
-                console.error('Purchase Failed', e.message);
-                myGameInstance.SendMessage('YandexGame', 'OnPurchaseFailed', id);
-                FocusGame();
-            })
-        } else {
-            console.log('Payments == null');
-        }
-    } catch (e) {
-        console.error('CRASH Buy Payments: ', e.message);
-        FocusGame();
-    }
-}
-
-function ConsumePurchase(id) {
-    try {
-        if (payments != null) {
-            payments.getPurchases().then(purchases => {
-                for (i = 0; i < purchases.length; i++) {
-                    if (purchases[i].productID === id) {
-                        payments.consumePurchase(purchases[i].purchaseToken);
-                        myGameInstance.SendMessage('YandexGame', 'OnPurchaseSuccess', id);
-                    }
-                }
-            });
-        }
-        else console.log('Consume purchase: payments null');
-    } catch (e) {
-        console.error('CRASH Consume Purchase: ', e.message);
-    }
-}
-
-function ConsumePurchases() {
-    try {
-        if (payments != null) {
-            payments.getPurchases().then(purchases => {
-                console.log('Unprocessed purchases: ', purchases.length);
-                for (i = 0; i < purchases.length; i++) {
-                    payments.consumePurchase(purchases[i].purchaseToken);
-                    myGameInstance.SendMessage('YandexGame', 'OnPurchaseSuccess', purchases[i].productID);
-                }
-            });
-        }
-        else console.log('Consume purchases: payments null');
-    } catch (e) {
-        console.error('CRASH Consume purchases: ', e.message);
-    }
-}
-
-
-let leaderboard = null;
-
-function InitLeaderboards() {
-    ysdk.getLeaderboards()
-        .then(_lb => leaderboard = _lb);
-}
-
-function WaitForLeaderboard() {
-    return new Promise((resolve, reject) => {
-        const interval = setInterval(() => {
-            if (leaderboard !== null) {
-                clearInterval(interval);
-                clearTimeout(timeout);
-                resolve();
-            }
-        }, 100);
-
-        const timeout = setTimeout(() => {
-            clearInterval(interval);
-            reject(new Error("Leaderboard initialization timeout"));
-        }, 5000);
-    });
-}
-
-async function GetLeaderboardScores(nameLB, maxPlayers, quantityTop, quantityAround, photoSize, auth) {
-    try {
-        if (leaderboard === null) {
-            await WaitForLeaderboard();
-        }
-
-        var jsonEntries = {
-            technoName: '',
-            isDefault: false,
-            isInvertSortOrder: false,
-            decimalOffset: 0,
-            type: '' // , title: ''
-        };
-
-        ysdk.getLeaderboards()
-            .then(leaderboard => leaderboard.getLeaderboardDescription(nameLB))
-            .then(res => {
-                jsonEntries.technoName = nameLB;
-                jsonEntries.isDefault = res.default;
-                jsonEntries.isInvertSortOrder = res.description.invert_sort_order;
-                jsonEntries.decimalOffset = res.description.score_format.options.decimal_offset;
-                jsonEntries.type = res.description.type; // Не определяется на момент 18.07.23
-                //jsonEntries.title = res.title; // Реализуйте по предпочтениям
-
-                return leaderboard.getLeaderboardEntries(nameLB, {
-                    quantityTop: quantityTop,
-                    includeUser: auth,
-                    quantityAround: quantityAround
-                });
-            })
-            .then(res => {
-                let jsonPlayers = EntriesLB(res, maxPlayers, photoSize);
-                let combinedJson = { ...jsonEntries, ...jsonPlayers };
-
-                myGameInstance.SendMessage('YandexGame', 'LeaderboardEntries', JSON.stringify(combinedJson));
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-    catch (e) {
-        console.error('CRASH Get Leaderboard: ', e.message);
-    }
-}
-
-async function SetLeaderboardScores(_name, score) {
-    try {
-        if (leaderboard === null) {
-            await WaitForLeaderboard();
-        }
-
-        ysdk.getLeaderboards()
-            .then(leaderboard => {
-                leaderboard.setLeaderboardScore(_name, score);
-            });
-    } catch (e) {
-        console.error('CRASH Set Leader board Scores: ', e.message);
-    }
-}
-
-function EntriesLB(res, maxPlayers, photoSize) {
-    let LeaderboardEntriesText = '';
-    let playersCount;
-
-    if (res.entries.length < maxPlayers) {
-        playersCount = res.entries.length;
-    } else {
-        playersCount = maxPlayers;
-    }
-
-    let ranks = new Array(playersCount);
-    let photos = new Array(playersCount);
-    let mames = new Array(playersCount);
-    let scores = new Array(playersCount);
-    let uniqueIDs = new Array(playersCount);
-
-    for (i = 0; i < playersCount; i++) {
-        ranks[i] = res.entries[i].rank;
-        scores[i] = res.entries[i].score;
-        uniqueIDs[i] = res.entries[i].player.uniqueID;
-        photos[i] = res.entries[i].player.getAvatarSrc(photoSize);
-
-        if (res.entries[i].player.scopePermissions.public_name !== "allow")
-            mames[i] = "anonymous";
-        else
-            mames[i] = res.entries[i].player.publicName;
-
-        LeaderboardEntriesText += ranks[i] + '. ' + mames[i] + ": " + scores[i] + '\n';
-    }
-
-    if (playersCount === 0) {
-        LeaderboardEntriesText = 'no data';
-    }
-
-    let jsonPlayers = {
-        "entries": LeaderboardEntriesText,
-        "ranks": ranks,
-        "photos": photos,
-        "names": mames,
-        "scores": scores,
-        "uniqueIDs": uniqueIDs
-    };
-
-    return jsonPlayers;
-}
-
-
 var environmentData = 'null';
 
 function RequestingEnvironmentData(sendback) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         if (ysdk == null) {
-            resolve('null');
+            resolve('');
             return;
         }
         try {
@@ -729,24 +685,6 @@ function RequestingEnvironmentData(sendback) {
                         if (prompt.canShow)
                             promptCanShow = true;
 
-                        var browser = navigator.userAgent;
-                        if (browser.includes('YaBrowser') || browser.includes('YaSearchBrowser'))
-                            browser = 'Yandex';
-                        else if (browser.includes('Opera') || browser.includes('OPR'))
-                            browser = 'Opera';
-                        else if (browser.includes('Firefox'))
-                            browser = 'Firefox';
-                        else if (browser.includes('MSIE'))
-                            browser = 'IE';
-                        else if (browser.includes('Edge'))
-                            browser = 'Edge';
-                        else if (browser.includes('Chrome'))
-                            browser = 'Chrome';
-                        else if (browser.includes('Safari'))
-                            browser = 'Safari';
-                        else
-                            browser = 'Other';
-
                         let jsonEnvir = {
                             "language": ysdk.environment.i18n.lang,
                             "domain": ysdk.environment.i18n.tld,
@@ -759,9 +697,7 @@ function RequestingEnvironmentData(sendback) {
                             "browserLang": ysdk.environment.browser.lang,
                             "payload": ysdk.environment.payload,
                             "promptCanShow": promptCanShow,
-                            "reviewCanShow": reviewCanShow,
-                            "platform": navigator.platform,
-                            "browser": browser
+                            "reviewCanShow": reviewCanShow
                         };
                         if (sendback)
                             myGameInstance.SendMessage('YandexGame', 'SetEnvirData', JSON.stringify(jsonEnvir));
@@ -771,10 +707,15 @@ function RequestingEnvironmentData(sendback) {
                 });
         } catch (e) {
             console.error('CRASH Requesting Environment Data: ', e.message);
-            resolve('null');
+            reject(e);
         }
     });
 }
+
+window.addEventListener('beforeunload', (event) => {
+    if(myGameInstance != null) 
+        myGameInstance.SendMessage('YandexGame', '_SaveProgress'); 
+    });
 
 
 var playerData = 'noData';
@@ -789,7 +730,7 @@ function InitPlayer(sendback) {
                 resolve(NotAuthorized());
             }
             else {
-                let _scopes = true;
+                let _scopes = false;
                 ysdk.getPlayer({ scopes: _scopes })
                     .then(_player => {
                         player = _player;
@@ -813,8 +754,7 @@ function InitPlayer(sendback) {
                                 "playerAuth": "resolved",
                                 "playerName": playerName,
                                 "playerId": player.getUniqueID(),
-                                "playerPhoto": playerPhoto,
-                                "payingStatus": player.getPayingStatus()
+                                "playerPhoto": playerPhoto
                             };
                             if (sendback)
                                 myGameInstance.SendMessage('YandexGame', 'SetInitializationSDK', JSON.stringify(authJson));
@@ -841,8 +781,7 @@ function NotAuthorized() {
         "playerAuth": "rejected",
         "playerName": "unauthorized",
         "playerId": "unauthorized",
-        "playerPhoto": "unknown",
-        "payingStatus": player.getPayingStatus()
+        "playerPhoto": "null"
     };
     return JSON.stringify(authJson);
 }
